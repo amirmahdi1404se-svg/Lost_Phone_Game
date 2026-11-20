@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>پرونده ۴۰۴: آخرین سیگنال</title>
+<style>
+  :root {
+    --bg-dark: #05070f;
+    --navy: #0b1224;
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-strong: rgba(15, 23, 42, 0.78);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --blue: #3b82f6;
+    --blue-glow: rgba(59, 130, 246, 0.45);
+    --violet: #8b5cf6;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Phone Frame */
+  #phone {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    height: 100dvh;
+    max-height: 920px;
+    background:
+      radial-gradient(circle at 15% 18%, rgba(59, 130, 246, 0.25), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.22), transparent 50%),
+      linear-gradient(160deg, #04060d 0%, #0b132b 55%, #070a14 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 60px rgba(0,0,0,0.85);
+  }
+
+  @media (min-width: 500px) {
+    #phone {
+      height: 94dvh;
+      border-radius: 38px;
+      border: 2px solid rgba(255,255,255,0.12);
+    }
+  }
+
+  /* Status Bar */
+  .status-bar {
+    height: 36px;
+    padding: 0 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text);
+    z-index: 50;
+    background: rgba(5, 7, 15, 0.35);
+    backdrop-filter: blur(12px);
+    direction: ltr;
+  }
+  .status-icons { display: flex; gap: 8px; align-items: center; }
+  .battery {
+    display: flex; align-items: center; gap: 4px;
+    color: var(--danger); font-weight: 700;
+  }
+  .battery-box {
+    width: 22px; height: 11px; border: 1.5px solid var(--danger);
+    border-radius: 3px; padding: 1px; position: relative;
+  }
+  .battery-fill {
+    width: 18%; height: 100%; background: var(--danger); border-radius: 1px;
+    animation: blink 1.8s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* Floating Notification Banner */
+  #notif-banner {
+    position: absolute;
+    top: -120px;
+    left: 12px;
+    right: 12px;
+    z-index: 200;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(22px);
+    border: 1px solid rgba(59, 130, 246, 0.45);
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+    transition: top 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+  }
+  #notif-banner.show { top: 44px; }
+  .notif-head {
+    display: flex; justify-content: space-between; font-size: 11px;
+    color: var(--blue); margin-bottom: 4px; font-weight: 700;
+  }
+  .notif-body { font-size: 13px; line-height: 1.5; color: var(--text); }
+
+  /* Screens */
+  .screen {
+    position: absolute;
+    inset: 36px 0 0 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeIn 0.25s ease;
+  }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+  /* Intro Overlay */
+  #intro-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 300;
+    background: radial-gradient(circle at top, #0f172a 0%, #03050a 75%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 28px;
+    text-align: center;
+  }
+  .intro-badge {
+    font-size: 11px; letter-spacing: 1px; color: var(--blue);
+    background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.35);
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 18px;
+  }
+  #intro-screen h1 { font-size: 26px; margin-bottom: 14px; font-weight: 800; }
+  #intro-screen p {
+    font-size: 14px; line-height: 1.9; color: var(--muted);
+    margin-bottom: 28px; max-width: 340px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue), var(--violet));
+    color: #fff; border: none; padding: 14px 30px; border-radius: 16px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 25px var(--blue-glow);
+    transition: transform 0.15s;
+  }
+  .btn-primary:active { transform: scale(0.96); }
+
+  /* Lock Screen */
+  #lock-screen {
+    justify-content: space-between;
+    padding: 24px 20px 30px;
+    align-items: center;
+    background: rgba(5, 7, 15, 0.45);
+    backdrop-filter: blur(10px);
+  }
+  .lock-clock { text-align: center; margin-top: 8px; }
+  .lock-time { font-size: 56px; font-weight: 200; letter-spacing: 2px; direction: ltr; }
+  .lock-date { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .lock-notif {
+    width: 100%;
+    background: var(--glass);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 12px 14px;
+    margin: 14px 0;
+  }
+  .lock-notif-title {
+    display: flex; justify-content: space-between; font-size: 12px;
+    color: var(--blue); font-weight: 700; margin-bottom: 4px;
+  }
+  .lock-notif-text { font-size: 13px; line-height: 1.6; color: #e2e8f0; }
+
+  .pin-area { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .pin-label { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .pin-dots { display: flex; gap: 14px; margin-bottom: 18px; direction: ltr; }
+  .pin-dot {
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.4); transition: 0.15s;
+  }
+  .pin-dot.filled { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 12px var(--blue-glow); }
+  .pin-dot.error { background: var(--danger); border-color: var(--danger); }
+
+  .keypad {
+    display: grid; grid-template-columns: repeat(3, 68px); gap: 12px 20px;
+    direction: ltr;
+  }
+  .key {
+    width: 68px; height: 54px; border-radius: 18px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    color: #fff; font-size: 21px; font-weight: 500;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; backdrop-filter: blur(12px);
+    transition: background 0.12s, transform 0.1s;
+  }
+  .key:active { background: rgba(59,130,246,0.35); transform: scale(0.93); }
+  .key.action { font-size: 14px; color: var(--muted); }
+
+  /* Home Screen */
+  #home-screen {
+    padding: 20px 18px 24px;
+    justify-content: space-between;
+  }
+  .home-widget {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+  }
+  .widget-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .widget-title { font-size: 13px; color: var(--blue); font-weight: 700; }
+  .clue-pill {
+    font-size: 12px; background: rgba(59,130,246,0.18);
+    border: 1px solid rgba(59,130,246,0.4); color: #bfdbfe;
+    padding: 3px 10px; border-radius: 12px; font-weight: 700;
+  }
+  .widget-desc { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 14px;
+    padding: 6px 4px;
+    flex: 1;
+    align-content: start;
+  }
+  .app-icon-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    cursor: pointer; position: relative;
+  }
+  .app-icon {
+    width: 64px; height: 64px; border-radius: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(18px);
+    border: 1px solid var(--glass-border);
+    display: flex; justify-content: center; align-items: center;
+    font-size: 28px; position: relative;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    transition: transform 0.15s, border-color 0.2s;
+  }
+  .app-icon-wrap:active .app-icon { transform: scale(0.92); border-color: var(--blue); }
+  .app-label { font-size: 12px; color: #e2e8f0; text-align: center; font-weight: 500; }
+  .badge {
+    position: absolute; top: -5px; left: -5px;
+    background: var(--danger); color: #fff; font-size: 11px; font-weight: 700;
+    min-width: 20px; height: 20px; border-radius: 10px;
+    display: flex; justify-content: center; align-items: center; padding: 0 5px;
+    box-shadow: 0 2px 8px rgba(239,68,68,0.6);
+  }
+
+  .dock {
+    background: var(--glass);
+    backdrop-filter: blur(22px);
+    border: 1px solid var(--glass-border);
+    border-radius: 26px;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  /* Generic App Header & Body */
+  .app-header {
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(11, 18, 36, 0.72);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--glass-border);
+    flex-shrink: 0;
+  }
+  .app-header h2 { font-size: 16px; font-weight: 700; }
+  .back-btn {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    color: var(--text); padding: 6px 12px; border-radius: 12px;
+    font-size: 12px; cursor: pointer;
+  }
+  .app-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    padding-bottom: 70px;
+  }
+  .app-content::-webkit-scrollbar { width: 4px; }
+  .app-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 4px; }
+
+  /* Glass Card */
+  .card {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:active { background: rgba(255,255,255,0.11); }
+  .card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .card-title { font-size: 14.5px; font-weight: 700; color: var(--text); }
+  .card-meta { font-size: 11px; color: var(--muted); }
+  .card-sub { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+
+  /* Chat Bubbles */
+  .chat-list { display: flex; flex-direction: column; gap: 10px; }
+  .msg {
+    max-width: 84%; padding: 11px 14px; border-radius: 18px;
+    font-size: 13.5px; line-height: 1.7; position: relative;
+  }
+  .msg.in {
+    align-self: flex-start;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid var(--glass-border);
+    border-bottom-right-radius: 4px;
+  }
+  .msg.out {
+    align-self: flex-end;
+    background: linear-gradient(135deg, rgba(59,130,246,0.75), rgba(139,92,246,0.65));
+    border: 1px solid rgba(147,197,253,0.3);
+    border-bottom-left-radius: 4px;
+  }
+  .msg-time { display: block; font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 4px; text-align: left; }
+
+  /* Gallery */
+  .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .photo-thumb {
+    background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: 16px; overflow: hidden; cursor: pointer;
+  }
+  .photo-thumb svg { width: 100%; height: 125px; display: block; }
+  .photo-caption { padding: 8px 10px; font-size: 12px; color: #e2e8f0; text-align: center; }
+
+  /* Modal / Lightbox */
+  #modal {
+    position: absolute; inset: 0; z-index: 150;
+    background: rgba(3, 5, 12, 0.88);
+    backdrop-filter: blur(18px);
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  #modal.show { display: flex; }
+  .modal-box {
+    width: 100%; max-height: 85%; overflow-y: auto;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px; padding: 18px;
+  }
+
+  /* Dialer */
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab {
+    flex: 1; text-align: center; padding: 9px; border-radius: 12px;
+    background: var(--glass); border: 1px solid var(--glass-border);
+    font-size: 13px; cursor: pointer; color: var(--muted);
+  }
+  .tab.active { background: rgba(59,130,246,0.25); border-color: var(--blue); color: #fff; font-weight: 700; }
+  .dial-display {
+    text-align: center; font-size: 26px; letter-spacing: 3px; height: 46px;
+    line-height: 46px; margin-bottom: 14px; direction: ltr; color: #fff;
+    background: rgba(0,0,0,0.28); border-radius: 14px; border: 1px solid var(--glass-border);
+  }
+  .call-btn {
+    width: 100%; margin-top: 14px; padding: 13px; border-radius: 16px;
+    background: var(--success); color: #fff; border: none; font-size: 15px; font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Radar Map */
+  .map-box {
+    position: relative; width: 100%; height: 270px;
+    background: radial-gradient(circle at center, #0f1c38 0%, #060b18 100%);
+    border: 1px solid rgba(59,130,246,0.35); border-radius: 20px;
+    overflow: hidden; margin-bottom: 14px;
+  }
+  .radar-ring {
+    position: absolute; border: 1px solid rgba(59,130,246,0.18);
+    border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  }
+  .map-pin {
+    position: absolute; transform: translate(-50%, -50%);
+    background: rgba(15,23,42,0.9); border: 2px solid var(--blue);
+    color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 10px;
+    cursor: pointer; white-space: nowrap; box-shadow: 0 0 14px var(--blue-glow);
+  }
+  .map-pin.danger { border-color: var(--danger); box-shadow: 0 0 16px rgba(239,68,68,0.65); }
+
+  /* Case Form */
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 13px; color: #bfdbfe; margin-bottom: 6px; font-weight: 700; }
+  .form-group select {
+    width: 100%; padding: 11px; border-radius: 12px;
+    background: rgba(15, 23, 42, 0.9); color: #fff;
+    border: 1px solid var(--glass-border); font-size: 13.5px;
+  }
+
+  /* Bottom Home Bar */
+  .home-bar-wrap {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 34px;
+    display: flex; justify-content: center; align-items: center;
+    background: linear-gradient(to top, rgba(5,7,15,0.9), transparent);
+    z-index: 60; cursor: pointer;
+  }
+  .home-bar { width: 120px; height: 5px; background: rgba(255,255,255,0.45); border-radius: 10px; }
+
+  .tag {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 8px;
+    background: rgba(139,92,246,0.22); color: #ddd6fe; border: 1px solid rgba(139,92,246,0.4);
+  }
+  .tag.red { background: rgba(239,68,68,0.2); color: #fecaca; border-color: rgba(239,68,68,0.45); }
+  .tag.green { background: rgba(16,185,129,0.2); color: #a7f3d0; border-color: rgba(16,185,129,0.45); }
+
+  .pin-input-box {
+    width: 100%; padding: 12px; border-radius: 14px; text-align: center;
+    font-size: 20px; letter-spacing: 6px; direction: ltr;
+    background: rgba(0,0,0,0.35); border: 1px solid var(--blue); color: #fff;
+    margin: 12px 0;
+  }
+</style>
+</head>
+<body>
+
+<div id="phone">
+  <!-- Intro Overlay -->
+  <div id="intro-screen">
+    <div class="intro-badge">پرونده تعاملی کارآگاهی • آفلاین</div>
+    <h1>پرونده ۴۰۴: آخرین سیگنال</h1>
+    <p>
+      نیمه‌شب بارانی، کنار خروجی <strong>ایستگاه مترو متروکه دروازه قدیم</strong>، یک گوشی خیس با صفحه ترک‌خورده پیدا کردید.
+      باتری فقط ۶٪ است. گوشی متعلق به <strong>آرش راد</strong> (پژوهشگر امنیت سایبری) است که ۴۸ ساعت پیش ناپدید شده.
+      <br><br>
+      رمزها را بشکنید، چت‌ها، عکس‌ها، تماس‌ها و گاوصندوق مخفی را بررسی کنید و قبل از اینکه دیر شود، حقیقت را به پلیس گزارش دهید.
+    </p>
+    <button class="btn-primary" onclick="startGame()">روشن کردن گوشی</button>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span id="clock-mini">23:42</span>
+    <div class="status-icons">
+      <span>NO SIM</span>
+      <span>Wi-Fi</span>
+      <div class="battery">
+        <span>6%</span>
+        <div class="battery-box"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Notification -->
+  <div id="notif-banner" onclick="hideNotif()">
+    <div class="notif-head">
+      <span id="notif-title">اعلان سیستم</span>
+      <span>الان</span>
+    </div>
+    <div class="notif-body" id="notif-body"></div>
+  </div>
+
+  <!-- 1. LOCK SCREEN -->
+  <div id="lock-screen" class="screen active">
+    <div class="lock-clock">
+      <div class="lock-time">23:42</div>
+      <div class="lock-date">پنج‌شنبه • ۲۹ آبان</div>
+    </div>
+
+    <div class="lock-notif">
+      <div class="lock-notif-title">
+        <span>💬 سارا (خواهر)</span>
+        <span>۱۲ دقیقه پیش</span>
+      </div>
+      <div class="lock-notif-text">
+        آرش توروخدا جواب بده! ۴۸ ساعته خبری ازت نیست... دیوونه شدم. اگر کسی این گوشی رو پیدا کرده لطفاً بازش کنه! رمز گوشیش همیشه سال تولد مامان بود: <strong>1354</strong>
+      </div>
+    </div>
+
+    <div class="pin-area">
+      <div class="pin-label" id="lock-msg">رمز ۴ رقمی گوشی را وارد کنید</div>
+      <div class="pin-dots" id="lock-dots">
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+        <div class="pin-dot"></div><div class="pin-dot"></div>
+      </div>
+      <div class="keypad">
+        <div class="key" onclick="enterLockDigit('1')">1</div>
+        <div class="key" onclick="enterLockDigit('2')">2</div>
+        <div class="key" onclick="enterLockDigit('3')">3</div>
+        <div class="key" onclick="enterLockDigit('4')">4</div>
+        <div class="key" onclick="enterLockDigit('5')">5</div>
+        <div class="key" onclick="enterLockDigit('6')">6</div>
+        <div class="key" onclick="enterLockDigit('7')">7</div>
+        <div class="key" onclick="enterLockDigit('8')">8</div>
+        <div class="key" onclick="enterLockDigit('9')">9</div>
+        <div class="key action" onclick="clearLockPin()">پاک</div>
+        <div class="key" onclick="enterLockDigit('0')">0</div>
+        <div class="key action" onclick="delLockDigit()">⌫</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HOME SCREEN -->
+  <div id="home-screen" class="screen">
+    <div>
+      <div class="home-widget">
+        <div class="widget-top">
+          <span class="widget-title">🔍 وضعیت پرونده آرش راد</span>
+          <span class="clue-pill" id="clue-counter">۰ از ۷ سرنخ</span>
+        </div>
+        <div class="widget-desc">
+          تمام اپلیکیشن‌ها را بگردید. اعداد، تاریخ‌ها و نام‌ها کلید باز کردن یادداشت خصوصی، صندوق صوتی و گاوصندوق هستند.
+        </div>
+      </div>
+
+      <div class="app-grid">
+        <div class="app-icon-wrap" onclick="openApp('chat-app')">
+          <div class="app-icon">💬<span class="badge" id="chat-badge">4</span></div>
+          <span class="app-label">پیام‌ها</span>
+        </div>
+        <div class="app-icon-wrap" onclick="openApp('gallery-app')">
+          <div class="app-icon">🖼️</div>
+          <span class="app-label">گالری</span>
+        </div>
+        <div class="app-icon-wrap" onclick="openApp('notes-app')">
+          <div class="app-icon">📝</div>
+          <span class="app-label">یادداشت‌ها</span>
+        </div>
+        <div class="app-icon-wrap" onclick="openApp('phone-app')">
+          <div class="app-icon">📞<span class="badge">2</span></div>
+          <span class="app-label">تماس‌ها</span>
+        </div>
+        <div class="app-icon-wrap" onclick="openApp('map-app')">
+          <div class="app-icon">📡</div>
+          <span class="app-label">ردیاب GPS</span>
+        </div>
+        <div class="app-icon-wrap" onclick="openApp('vault-app')">
+          <div class="app-icon">🔐</div>
+          <span class="app-label">گاوصندوق</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dock">
+      <div class="app-icon-wrap" onclick="openApp('case-app')">
+        <div class="app-icon" style="border-color: rgba(59,130,246,0.6);">🕵️‍♂️</div>
+        <span class="app-label">ثبت گزارش پلیس</span>
+      </div>
+      <div class="app-icon-wrap" onclick="showHintModal()">
+        <div class="app-icon">💡</div>
+        <span class="app-label">راهنما</span>
+      </div>
+      <div class="app-icon-wrap" onclick="openApp('lock-screen')">
+        <div class="app-icon">🔒</div>
+        <span class="app-label">قفل گوشی</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CHAT APP -->
+  <div id="chat-app" class="screen">
+    <div class="app-header">
+      <h2 id="chat-header-title">پیام‌ها</h2>
+      <button class="back-btn" id="chat-back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content" id="chat-content"></div>
+  </div>
+
+  <!-- 4. GALLERY APP -->
+  <div id="gallery-app" class="screen">
+    <div class="app-header">
+      <h2>گالری تصاویر</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </div>
+
+  <!-- 5. NOTES APP -->
+  <div id="notes-app" class="screen">
+    <div class="app-header">
+      <h2>یادداشت‌ها</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content" id="notes-content"></div>
+  </div>
+
+  <!-- 6. PHONE APP -->
+  <div id="phone-app" class="screen">
+    <div class="app-header">
+      <h2>تلفن و تماس‌ها</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content">
+      <div class="tabs">
+        <div class="tab active" id="tab-recents" onclick="switchPhoneTab('recents')">تماس‌های اخیر</div>
+        <div class="tab" id="tab-dialer" onclick="switchPhoneTab('dialer')">شماره‌گیر</div>
+      </div>
+      <div id="phone-recents"></div>
+      <div id="phone-dialer" style="display:none;">
+        <div class="dial-display" id="dial-display"></div>
+        <div class="keypad" style="margin:0 auto; justify-content:center;">
+          <div class="key" onclick="dialDigit('1')">1</div>
+          <div class="key" onclick="dialDigit('2')">2</div>
+          <div class="key" onclick="dialDigit('3')">3</div>
+          <div class="key" onclick="dialDigit('4')">4</div>
+          <div class="key" onclick="dialDigit('5')">5</div>
+          <div class="key" onclick="dialDigit('6')">6</div>
+          <div class="key" onclick="dialDigit('7')">7</div>
+          <div class="key" onclick="dialDigit('8')">8</div>
+          <div class="key" onclick="dialDigit('9')">9</div>
+          <div class="key action" onclick="clearDial()">پاک</div>
+          <div class="key" onclick="dialDigit('0')">0</div>
+          <div class="key action" onclick="delDial()">⌫</div>
+        </div>
+        <button class="call-btn" onclick="makeCall()">📞 برقراری تماس</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. MAP / RADAR APP -->
+  <div id="map-app" class="screen">
+    <div class="app-header">
+      <h2>تاریخچه موقعیت GPS</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content">
+      <div class="map-box">
+        <div class="radar-ring" style="width:90px;height:90px;"></div>
+        <div class="radar-ring" style="width:170px;height:170px;"></div>
+        <div class="radar-ring" style="width:250px;height:250px;"></div>
+        <div class="map-pin" style="top:24%; left:28%;" onclick="selectPin(0)">۱. شرکت پارس‌دیتا</div>
+        <div class="map-pin" style="top:46%; left:68%;" onclick="selectPin(1)">۲. کافه نوآر</div>
+        <div class="map-pin" style="top:70%; left:42%;" onclick="selectPin(2)">۳. خیابان حافظ</div>
+        <div class="map-pin danger" style="top:84%; left:72%;" onclick="selectPin(3)">⚠️ ۴. مترو قدیم</div>
+      </div>
+      <div id="map-detail" class="card">
+        <div class="card-title">روی یکی از نقاط نقشه ضربه بزنید</div>
+        <div class="card-sub" style="margin-top:6px;">مسیر حرکت آرش در شب ناپدید شدن روی رادار ثبت شده است.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. VAULT APP -->
+  <div id="vault-app" class="screen">
+    <div class="app-header">
+      <h2>گاوصندوق رمزنگاری‌شده</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content" id="vault-content"></div>
+  </div>
+
+  <!-- 9. CASE REPORT APP -->
+  <div id="case-app" class="screen">
+    <div class="app-header">
+      <h2>پرونده و گزارش نهایی به پلیس</h2>
+      <button class="back-btn" onclick="goHome()">بازگشت</button>
+    </div>
+    <div class="app-content" id="case-content"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" onclick="closeModal(event)">
+    <div class="modal-box" id="modal-box" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <!-- Bottom Home Bar -->
+  <div class="home-bar-wrap" id="home-bar-wrap" style="display:none;" onclick="goHome()">
+    <div class="home-bar"></div>
+  </div>
+</div>
+
+<script>
+/* ================= AUDIO ENGINE (No External Files) ================= */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let actx = null;
+function playTone(freq, duration = 0.08, type = 'sine', vol = 0.08) {
+  try {
+    if (!actx) actx = new AudioCtx();
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, actx.currentTime);
+    gain.gain.setValueAtTime(vol, actx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + duration);
+    osc.connect(gain); gain.connect(actx.destination);
+    osc.start(); osc.stop(actx.currentTime + duration);
+  } catch (e) {}
+}
+function sfxClick() { playTone(620, 0.04, 'triangle', 0.05); }
+function sfxError() { playTone(180, 0.22, 'sawtooth', 0.09); }
+function sfxUnlock() { playTone(520, 0.09); setTimeout(() => playTone(780, 0.14), 90); }
+function sfxNotif() { playTone(880, 0.1); setTimeout(() => playTone(1174, 0.18), 110); }
+
+/* ================= GAME STATE ================= */
+const defaultState = {
+  unlockedPhone: false,
+  unlockedNote: false,
+  unlockedVault: false,
+  calledVoicemail: false,
+  calledUnknown: false,
+  clues: []
+};
+let state = JSON.parse(localStorage.getItem('case404_state') || 'null') || {...defaultState};
+function saveState() {
+  localStorage.setItem('case404_state', JSON.stringify(state));
+  updateClueCounter();
+}
+
+const ALL_CLUES = {
+  cafe_receipt: 'رسید کافه نوآر (میز ۰۹، ساعت ۲۱)',
+  server_photo: 'کد سرور ۷ (۷۴) و کارت دکتر بهرام نوری',
+  sohrab_id: 'کد پرسنلی سهراب (۴۸۲۹) برای صندوق صوتی',
+  locked_note: 'یادداشت محرمانه آرش درباره فرمول رمز گاوصندوق',
+  gps_warehouse: 'آخرین سیگنال در انبار شماره ۰۸ مترو قدیم',
+  voicemail_secret: 'پیام صوتی اضطراری آرش (انگشتر نقره‌ای دکتر نوری)',
+  vault_evidence: 'مدارک قطعی گاوصندوق: دستور دکتر بهرام نوری و پروژه سایه'
+};
+
+function addClue(id) {
+  if (!state.clues.includes(id)) {
+    state.clues.push(id);
+    saveState();
+    showNotif('🔎 سرنخ جدید ثبت شد!', ALL_CLUES[id]);
+  }
+}
+
+function updateClueCounter() {
+  const el = document.getElementById('clue-counter');
+  if (el) el.textContent = `${state.clues.length} از ${Object.keys(ALL_CLUES).length} سرنخ`;
+}
+
+/* ================= NOTIFICATIONS ================= */
+let notifTimer = null;
+function showNotif(title, body) {
+  sfxNotif();
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-body').textContent = body;
+  const b = document.getElementById('notif-banner');
+  b.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => b.classList.remove('show'), 4800);
+}
+function hideNotif() { document.getElementById('notif-banner').classList.remove('show'); }
+
+/* ================= NAVIGATION ================= */
+function startGame() {
+  sfxUnlock();
+  document.getElementById('intro-screen').style.display = 'none';
+  if (state.unlockedPhone) {
+    goHome();
+  }
+  updateClueCounter();
+}
+
+function openApp(screenId) {
+  sfxClick();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.getElementById('home-bar-wrap').style.display = (screenId === 'lock-screen') ? 'none' : 'flex';
+
+  if (screenId === 'chat-app') renderChatList();
+  if (screenId === 'gallery-app') renderGallery();
+  if (screenId === 'notes-app') renderNotes();
+  if (screenId === 'phone-app') renderRecents();
+  if (screenId === 'vault-app') renderVault();
+  if (screenId === 'case-app') renderCaseApp();
+}
+
+function goHome() {
+  if (!state.unlockedPhone) return;
+  openApp('home-screen');
+}
+
+/* ================= LOCK SCREEN ================= */
+let lockInput = '';
+function enterLockDigit(d) {
+  if (lockInput.length >= 4) return;
+  sfxClick();
+  lockInput += d;
+  renderLockDots();
+  if (lockInput.length === 4) {
+    setTimeout(() => {
+      if (lockInput === '1354') {
+        sfxUnlock();
+        state.unlockedPhone = true;
+        saveState();
+        lockInput = '';
+        renderLockDots();
+        goHome();
+        showNotif('🔓 قفل گوشی باز شد', 'با پیام‌ها، گالری و یادداشت‌ها شروع کنید.');
+      } else {
+        sfxError();
+        document.querySelectorAll('#lock-dots .pin-dot').forEach(dot => dot.classList.add('error'));
+        document.getElementById('lock-msg').textContent = 'رمز اشتباه است! اعلان روی صفحه را بخوانید.';
+        setTimeout(() => {
+          lockInput = '';
+          renderLockDots();
+          document.getElementById('lock-msg').textContent = 'رمز ۴ رقمی گوشی را وارد کنید';
+        }, 650);
+      }
+    }, 150);
+  }
+}
+function clearLockPin() { sfxClick(); lockInput = ''; renderLockDots(); }
+function delLockDigit() { sfxClick(); lockInput = lockInput.slice(0, -1); renderLockDots(); }
+function renderLockDots() {
+  const dots = document.querySelectorAll('#lock-dots .pin-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.remove('error');
+    dot.classList.toggle('filled', i < lockInput.length);
+  });
+}
+
+/* ================= CHAT APP DATA ================= */
+const chats = [
+  {
+    id: 'sara', name: 'سارا (خواهر)', preview: 'آرش توروخدا جواب بده! ۴۸ ساعته خبری ازت نیست...', time: '۲۳:۳۰', unread: 2,
+    messages: [
+      { type: 'in', text: 'آرش کجایی؟ دیشب قرار بود بیای خونه شام.', time: 'سه‌شنبه ۲۰:۱۰' },
+      { type: 'out', text: 'سارا ببخشید، توی شرکت یه چیز عجیب پیدا کردم. «پروژه سایه» خیلی بزرگ‌تر از اونیه که فکر می‌کردم.', time: 'سه‌شنبه ۲۰:۱۸' },
+      { type: 'in', text: 'باز رفتی سراغ دردسر؟ یادت نیست سر سهراب چه بلایی اومد؟', time: 'سه‌شنبه ۲۰:۲۰' },
+      { type: 'out', text: 'نگران نباش، امشب با کیانوش توی کافه نوآر قرار دارم. بعدش همه چیزو برات توضیح میدم.', time: 'سه‌شنبه ۲۰:۲۵' },
+      { type: 'in', text: 'کیانوش امروز صبح خیلی مضطرب اومد در خونه سراغت! گفت دیشب سر قرار نیومدی... ولی من حس خوبی بهش ندارم.', time: 'چهارشنبه ۱۱:۴۰' },
+      { type: 'in', text: 'آرش توروخدا جواب بده! ۴۸ ساعته خبری ازت نیست...', time: '۲۳:۳۰' }
+    ]
+  },
+  {
+    id: 'kianoush', name: 'کیانوش (همکار)', preview: 'فایل‌ها رو پاک کن تا هر دو بدبخت نشدیم!', time: 'سه‌شنبه ۲۲:۰۲', unread: 1,
+    messages: [
+      { type: 'in', text: 'آرش، شنیدم دیشب رفتی تو اتاق سرور ۷. دیوونه شدی؟ دوربین‌ها اونجا رو می‌گیرن!', time: 'سه‌شنبه ۱۹:۳۰' },
+      { type: 'out', text: 'دوربین‌ها رو برای ۳ دقیقه قطع کردم. کیانوش، اسم تو هم توی لیست دسترسی‌های پروژه سایه هست!', time: 'سه‌شنبه ۱۹:۳۴' },
+      { type: 'in', text: 'من مجبور بودم! دکتر نوری تهدیدم کرد. بیا کافه نوآر ساعت ۲۱:۰۰ همه چیزو بهت میگم.', time: 'سه‌شنبه ۱۹:۴۰' },
+      { type: 'out', text: 'باشه، میز گوشه همیشگی میشینم.', time: 'سه‌شنبه ۱۹:۴۲' },
+      { type: 'in', text: 'آرش نیومدم چون فهمیدم دارن تعقیبم می‌کنن! سریع از کافه بزن بیرون و فایل‌ها رو پاک کن تا هر دو بدبخت نشدیم!', time: 'سه‌شنبه ۲۲:۰۲' }
+    ]
+  },
+  {
+    id: 'unknown', name: 'شماره ناشناس (09128840404)', preview: 'فایل رو برگردون وگرنه مثل سهراب ناپدید میشی.', time: 'سه‌شنبه ۲۲:۲۰', unread: 1,
+    messages: [
+      { type: 'in', text: 'می‌دونیم نسخه بکاپ پروژه سایه توی گوشیته.', time: 'سه‌شنبه ۲۲:۱۸' },
+      { type: 'in', text: 'فایل رو برگردون وگرنه مثل سهراب ناپدید میشی. امشب آخرین فرصته.', time: 'سه‌شنبه ۲۲:۲۰' }
+    ]
+  },
+  {
+    id: 'group', name: 'گروه تحریریه شب', preview: 'راستی عکس کارت سهراب هنوز پیشته؟', time: 'دوشنبه', unread: 0,
+    messages: [
+      { type: 'in', text: 'امیر: بچه‌ها هنوز خبری از سهراب نیست؟ دو ماهه غیبش زده.', time: 'دوشنبه ۱۸:۰۰' },
+      { type: 'out', text: 'نه، ولی قبل از رفتن یه صندوق صوتی مخفی راه انداخته بود که فقط با کد پرسنلیش باز میشه.', time: 'دوشنبه ۱۸:۱۲' },
+      { type: 'in', text: 'امیر: راستی عکس کارت سهراب هنوز پیشته؟ توی گالریت نگهش دار، شاید به کارمون بیاد.', time: 'دوشنبه ۱۸:۱۵' }
+    ]
+  }
+];
+
+function renderChatList() {
+  document.getElementById('chat-header-title').textContent = 'پیام‌ها';
+  const backBtn = document.getElementById('chat-back-btn');
+  backBtn.onclick = goHome;
+  const el = document.getElementById('chat-content');
+  el.innerHTML = chats.map(c => `
+    <div class="card" onclick="openChat('${c.id}')">
+      <div class="card-row">
+        <span class="card-title">${c.name}</span>
+        <span class="card-meta">${c.time}</span>
+      </div>
+      <div class="card-row" style="margin-bottom:0;">
+        <span class="card-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:85%;">${c.preview}</span>
+        ${c.unread ? `<span class="tag red">${c.unread}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openChat(id) {
+  sfxClick();
+  const c = chats.find(x => x.id === id);
+  c.unread = 0;
+  document.getElementById('chat-header-title').textContent = c.name;
+  document.getElementById('chat-back-btn').onclick = renderChatList;
+  const extra = (id === 'unknown' && state.calledUnknown)
+    ? `<div class="msg in" style="border-color:var(--danger);">تو آرش نیستی... صدای نفستو شنیدم. گوشی رو همونجا بذار و برو، وگرنه نفر بعدی تویی!<span class="msg-time">همین الان</span></div>`
+    : '';
+  document.getElementById('chat-content').innerHTML = `
+    <div class="chat-list">
+      ${c.messages.map(m => `<div class="msg ${m.type}">${m.text}<span class="msg-time">${m.time}</span></div>`).join('')}
+      ${extra}
+    </div>
+  `;
+}
+
+/* ================= GALLERY APP (SVG ARTWORK) ================= */
+const photos = [
+  {
+    id: 'receipt', title: 'رسید کافه نوآر', date: 'سه‌شنبه ۲۱:۴۵', clue: 'cafe_receipt',
+    desc: 'آرش این عکس را چند دقیقه قبل از فرار گرفته. پایین رسید با خودکار نوشته شده: «رمز یادداشت خصوصی = شماره میز + ساعت قرار».',
+    svg: `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="240" height="160" fill="#0f172a"/>
+      <rect x="45" y="10" width="150" height="140" rx="6" fill="#f1f5f9"/>
+      <text x="120" y="32" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="bold">CAFE NOIR</text>
+      <line x1="60" y1="42" x2="180" y2="42" stroke="#94a3b8" stroke-dasharray="3"/>
+      <text x="175" y="62" text-anchor="end" fill="#334155" font-size="11">میز شماره: 09</text>
+      <text x="175" y="80" text-anchor="end" fill="#334155" font-size="11">ساعت قرار: 21:00</text>
+      <text x="175" y="98" text-anchor="end" fill="#334155" font-size="11">اسپرسو دوبل ....... 95,000</text>
+      <line x1="60" y1="112" x2="180" y2="112" stroke="#94a3b8" stroke-dasharray="3"/>
+      <text x="120" y="132" text-anchor="middle" fill="#dc2626" font-size="10" font-weight="bold">یادداشت = میز + ساعت</text>
+    </svg>`
+  },
+  {
+    id: 'server', title: 'اتاق سرور پارس‌دیتا', date: 'سه‌شنبه ۱۹:۰۸', clue: 'server_photo',
+    desc: 'عکس یواشکی از رک سرور شماره ۷. یک برچسب زرد روی سرور چسبیده که کد «X-74» رویش نوشته و کارت ورود دکتر بهرام نوری کنار کیبورد افتاده است!',
+    svg: `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="240" height="160" fill="#050814"/>
+      <rect x="25" y="14" width="90" height="132" rx="4" fill="#1e293b" stroke="#3b82f6"/>
+      <circle cx="40" cy="30" r="3" fill="#10b981"/><circle cx="52" cy="30" r="3" fill="#ef4444"/>
+      <rect x="35" y="45" width="70" height="10" fill="#0f172a"/>
+      <rect x="35" y="63" width="70" height="10" fill="#0f172a"/>
+      <rect x="42" y="84" width="56" height="44" fill="#facc15" transform="rotate(-4 70 106)"/>
+      <text x="70" y="103" text-anchor="middle" fill="#0f172a" font-size="10" font-weight="bold">SERVER #7</text>
+      <text x="70" y="120" text-anchor="middle" fill="#dc2626" font-size="14" font-weight="bold">X-74</text>
+      <rect x="135" y="45" width="85" height="90" rx="8" fill="#1e293b" stroke="#8b5cf6"/>
+      <text x="177" y="72" text-anchor="middle" fill="#e2e8f0" font-size="10">کارت مدیریت امنیت</text>
+      <text x="177" y="96" text-anchor="middle" fill="#60a5fa" font-size="12" font-weight="bold">دکتر بهرام نوری</text>
+      <text x="177" y="118" text-anchor="middle" fill="#94a3b8" font-size="9">دسترسی سطح ۵</text>
+    </svg>`
+  },
+  {
+    id: 'sohrab', title: 'کارت پرسنلی سهراب', date: 'دو ماه پیش', clue: 'sohrab_id',
+    desc: 'تصویر کارت پرسنلی سهراب (همکار مفقودشده قبلی). شماره پرسنلی او «4829» است.',
+    svg: `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="240" height="160" fill="#0b132b"/>
+      <rect x="24" y="18" width="192" height="124" rx="12" fill="#1e293b" stroke="#64748b"/>
+      <rect x="24" y="18" width="192" height="30" rx="12" fill="#3b82f6"/>
+      <text x="120" y="38" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">شرکت فناوری پارس‌دیتا</text>
+      <circle cx="176" cy="88" r="22" fill="#475569"/>
+      <text x="176" y="94" text-anchor="middle" fill="#cbd5e1" font-size="18">👤</text>
+      <text x="135" y="78" text-anchor="end" fill="#f8fafc" font-size="12" font-weight="bold">سهراب مرادی</text>
+      <text x="135" y="98" text-anchor="end" fill="#94a3b8" font-size="10">تحلیلگر ارشد داده</text>
+      <text x="135" y="122" text-anchor="end" fill="#38bdf8" font-size="13" font-weight="bold">ID: 4829</text>
+    </svg>`
+  },
+  {
+    id: 'metro', title: 'تونل مترو قدیم', date: 'سه‌شنبه ۲۲:۳۸', clue: null,
+    desc: 'یک عکس تار و لرزان که ظاهراً هنگام دویدن گرفته شده. روی دیوار بتنی عدد ۴۰۴ و یک در فلزی سنگین دیده می‌شود.',
+    svg: `<svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="240" height="160" fill="#03050a"/>
+      <path d="M40 160 Q120 10 200 160" fill="#111827" stroke="#334155" stroke-width="3"/>
+      <rect x="92" y="70" width="56" height="90" fill="#1f2937" stroke="#475569"/>
+      <text x="120" y="102" text-anchor="middle" fill="#ef4444" font-size="18" font-weight="bold" opacity="0.8">404</text>
+      <circle cx="138" cy="118" r="3" fill="#ef4444"/>
+      <text x="120" y="148" text-anchor="middle" fill="#64748b" font-size="9">خروجی اضطراری - ورود ممنوع</text>
+    </svg>`
+  }
+];
+
+function renderGallery() {
+  document.getElementById('gallery-grid').innerHTML = photos.map((p, idx) => `
+    <div class="photo-thumb" onclick="openPhoto(${idx})">
+      ${p.svg}
+      <div class="photo-caption">${p.title}</div>
+    </div>
+  `).join('');
+}
+
+function openPhoto(idx) {
+  sfxClick();
+  const p = photos[idx];
+  if (p.clue) addClue(p.clue);
+  showModal(`
+    <div style="margin-bottom:10px;border-radius:14px;overflow:hidden;border:1px solid var(--glass-border);">${p.svg}</div>
+    <div class="card-row">
+      <span class="card-title">${p.title}</span>
+      <span class="card-meta">${p.date}</span>
+    </div>
+    <p class="card-sub" style="margin:10px 0 16px;">${p.desc}</p>
+    <button class="btn-primary" style="width:100%;padding:10px;" onclick="closeModal()">بستن تصویر</button>
+  `);
+}
+
+/* ================= NOTES APP ================= */
+function renderNotes() {
+  const el = document.getElementById('notes-content');
+  el.innerHTML = `
+    <div class="card" onclick="openNote(1)">
+      <div class="card-row">
+        <span class="card-title">📌 کارهای فوری و یادآوری</span>
+        <span class="tag green">باز</span>
+      </div>
+      <div class="card-sub">شماره صندوق صوتی مخفی سهراب رو ذخیره نکردم تا پیداش نکنن...</div>
+    </div>
+
+    <div class="card" onclick="openNote(2)">
+      <div class="card-row">
+        <span class="card-title">📄 پیش‌نویس گزارش «پروژه سایه»</span>
+        <span class="tag green">باز</span>
+      </div>
+      <div class="card-sub">شرکت پارس‌دیتا به‌طور مخفیانه اطلاعات بیومتریک شهروندان را می‌فروشد...</div>
+    </div>
+
+    <div class="card" onclick="openNote(3)" style="border-color: ${state.unlockedNote ? 'var(--success)' : 'rgba(245,158,11,0.5)'};">
+      <div class="card-row">
+        <span class="card-title">${state.unlockedNote ? '🔓' : '🔒'} اگر بلایی سرم آمد... (خصوصی)</span>
+        <span class="tag ${state.unlockedNote ? 'green' : 'red'}">${state.unlockedNote ? 'باز شد' : 'قفل با رمز'}</span>
+      </div>
+      <div class="card-sub">${state.unlockedNote ? 'رمز گاوصندوق و هویت واقعی مغز متفکر...' : 'برای مشاهده این یادداشت، رمز ۴ رقمی آن را وارد کنید.'}</div>
+    </div>
+  `;
+}
+
+function openNote(num) {
+  sfxClick();
+  if (num === 1) {
+    showModal(`
+      <h3 style="margin-bottom:10px;">📌 کارهای فوری و یادآوری</h3>
+      <p class="card-sub" style="line-height:1.9;">
+        • خرید شارژر جدید برای گوشی<br>
+        • ارسال نسخه پشتیبان به ایمیل سارا<br>
+        • <strong>مهم:</strong> شماره صندوق صوتی اضطراری رو تو مخاطبین ذخیره نکردم تا اگر گوشیم افتاد دستشون نفهمن. شماره‌اش هست: پیش‌شماره <strong>0900</strong> به اضافه <strong>۴ رقم کد پرسنلی سهراب</strong>.
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;" onclick="closeModal()">بستن</button>
+    `);
+  } else if (num === 2) {
+    showModal(`
+      <h3 style="margin-bottom:10px;">📄 پیش‌نویس گزارش «پروژه سایه»</h3>
+      <p class="card-sub" style="line-height:1.9;">
+        طی سه ماه تحقیق متوجه شدم یک شبکه پنهان داخل شرکت پارس‌دیتا به نام <strong>پروژه سایه</strong> مشغول استخراج و فروش اطلاعات هویتی و بیومتریک میلیون‌ها نفر به یک سندیکای خارجی است.<br><br>
+        سهراب اولین نفری بود که این موضوع را فهمید و دو ماه پیش ناپدید شد. تمام مدارک مالی و فایل صوتی اعتراف را در <strong>گاوصندوق گوشی</strong> قفل کرده‌ام.
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;" onclick="closeModal()">بستن</button>
+    `);
+  } else if (num === 3) {
+    if (state.unlockedNote) {
+      addClue('locked_note');
+      showModal(`
+        <h3 style="margin-bottom:10px;color:var(--success);">🔓 اگر بلایی سرم آمد...</h3>
+        <p class="card-sub" style="line-height:1.9;">
+          اگر داری این متن رو می‌خونی یعنی منو گرفتن یا گیر افتادم.<br><br>
+          گول ظاهر قضیه رو نخور! کیانوش فقط ترسیده بود و مهره سوخته است. مغز متفکر کسیه که کارت ورودش تو اتاق سرور ۷ بود.<br><br>
+          <strong>فرمول رمز گاوصندوق (۴ رقم):</strong><br>
+          دو رقم اول = <strong>عدد روی برچسب سرور ۷</strong> (توی عکس گالری)<br>
+          دو رقم دوم = <strong>شماره انبار مخفی</strong> در آخرین نقطه ردیاب GPS
+        </p>
+        <button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;" onclick="closeModal()">متوجه شدم</button>
+      `);
+    } else {
+      showModal(`
+        <h3 style="margin-bottom:8px;">🔒 یادداشت خصوصی قفل است</h3>
+        <p class="card-sub">رمز ۴ رقمی این یادداشت را وارد کنید (سرنخ آن در گالری تصاویر است):</p>
+        <input type="tel" maxlength="4" id="note-pin-input" class="pin-input-box" placeholder="----">
+        <div id="note-pin-err" style="color:var(--danger);font-size:12px;text-align:center;margin-bottom:10px;"></div>
+        <button class="btn-primary" style="width:100%;padding:11px;" onclick="checkNotePin()">باز کردن قفل</button>
+      `);
+    }
+  }
+}
+
+function checkNotePin() {
+  const val = document.getElementById('note-pin-input').value.trim();
+  if (val === '0921') {
+    sfxUnlock();
+    state.unlockedNote = true;
+    saveState();
+    renderNotes();
+    openNote(3);
+  } else {
+    sfxError();
+    document.getElementById('note-pin-err').textContent = 'رمز اشتباه است! رسید کافه نوآر (میز + ساعت) را بررسی کنید.';
+  }
+}
+
+/* ================= PHONE & DIALER ================= */
+const recentCalls = [
+  { name: 'سارا (خواهر)', num: '09123456789', type: 'تماس بی‌پاسخ (۳ بار)', time: '۲۳:۱۰', miss: true },
+  { name: 'پلیس اضطراری', num: '110', type: 'خروجی • قطع شده بعد از ۲ ثانیه', time: 'سه‌شنبه ۲۲:۳۹', miss: false },
+  { name: 'ناشناس', num: '09128840404', type: 'ورودی • ۱۸ ثانیه', time: 'سه‌شنبه ۲۲:۱۵', miss: true },
+  { name: 'کیانوش (همکار)', num: '09351112233', type: 'خروجی • ۱۲ ثانیه', time: 'سه‌شنبه ۲۲:۰۵', miss: false }
+];
+
+function renderRecents() {
+  document.getElementById('phone-recents').innerHTML = recentCalls.map(c => `
+    <div class="card" onclick="quickDial('${c.num}')">
+      <div class="card-row">
+        <span class="card-title" style="color:${c.miss ? '#fca5a5' : '#fff'};">${c.name}</span>
+        <span class="card-meta">${c.time}</span>
+      </div>
+      <div class="card-row" style="margin-bottom:0;">
+        <span class="card-sub">${c.type}</span>
+        <span class="card-meta" style="direction:ltr;">${c.num}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function switchPhoneTab(tab) {
+  sfxClick();
+  document.getElementById('tab-recents').classList.toggle('active', tab === 'recents');
+  document.getElementById('tab-dialer').classList.toggle('active', tab === 'dialer');
+  document.getElementById('phone-recents').style.display = (tab === 'recents') ? 'block' : 'none';
+  document.getElementById('phone-dialer').style.display = (tab === 'dialer') ? 'block' : 'none';
+}
+
+let dialStr = '';
+function dialDigit(d) { if (dialStr.length < 11) { sfxClick(); dialStr += d; document.getElementById('dial-display').textContent = dialStr; } }
+function clearDial() { sfxClick(); dialStr = ''; document.getElementById('dial-display').textContent = ''; }
+function delDial() { sfxClick(); dialStr = dialStr.slice(0, -1); document.getElementById('dial-display').textContent = dialStr; }
+function quickDial(num) {
+  switchPhoneTab('dialer');
+  dialStr = num;
+  document.getElementById('dial-display').textContent = dialStr;
+}
+
+function makeCall() {
+  if (!dialStr) return;
+  sfxClick();
+  if (dialStr === '09004829') {
+    sfxUnlock();
+    state.calledVoicemail = true;
+    addClue('voicemail_secret');
+    saveState();
+    showModal(`
+      <div class="tag green" style="margin-bottom:10px;">🎙️ صندوق صوتی مخفی متصل شد (09004829)</div>
+      <h3 style="margin-bottom:10px;">آخرین پیام صوتی آرش راد</h3>
+      <p class="card-sub" style="line-height:1.95;background:rgba(0,0,0,0.3);padding:12px;border-radius:12px;">
+        «[صدای نفس‌نفس زدن و چکیدن آب]... الو؟ اگر کسی این پیامو می‌شنوه... پام آسیب دیده و منو توی <strong>انبار شماره ۰۸ ایستگاه مترو قدیم</strong> حبس کردن! گوشیم وسط راه افتاد بیرون...<br><br>
+        اونی که منو تعقیب کرد کیانوش نبود! توی تاریکی دستش رو دیدم... <strong>انگشتر نقره‌ای بزرگ دکتر بهرام نوری</strong> تو دستش بود! مدارک تو گاوصندوق گوشیه، سریع به پلیس خبر بدید...»
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:14px;padding:10px;" onclick="closeModal()">قطع تماس</button>
+    `);
+  } else if (dialStr === '09128840404') {
+    sfxError();
+    state.calledUnknown = true;
+    saveState();
+    showModal(`
+      <div class="tag red" style="margin-bottom:10px;">⚠️ تماس با شماره ناشناس</div>
+      <p class="card-sub" style="line-height:1.9;">
+        خط وصل شد... فقط صدای سکوت و نویز ضعیف می‌آید. ناگهان تماس قطع می‌شود و یک پیامک تهدیدآمیز در بخش <strong>پیام‌ها</strong> دریافت می‌کنید!
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:14px;padding:10px;" onclick="closeModal()">بستن</button>
+    `);
+    setTimeout(() => showNotif('💬 پیام جدید از شماره ناشناس', 'تو آرش نیستی... گوشی رو بذار زمین و برو!'), 900);
+  } else if (dialStr === '110') {
+    showModal(`
+      <h3 style="margin-bottom:10px;">🚔 مرکز فوریت‌های پلیسی ۱۱۰</h3>
+      <p class="card-sub" style="line-height:1.9;">
+        «برای اعزام تیم نجات و صدور حکم بازداشت، باید <strong>مقصر اصلی، مکان دقیق و انگیزه جرم</strong> را به‌صورت مستند از طریق اپلیکیشن <strong>ثبت گزارش پلیس</strong> در صفحه اصلی ارسال کنید.»
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:14px;padding:10px;" onclick="closeModal()">متوجه شدم</button>
+    `);
+  } else {
+    sfxError();
+    showModal(`
+      <h3 style="margin-bottom:8px;">خطا در برقراری تماس</h3>
+      <p class="card-sub">سیم‌کارت غیرفعال است. فقط شماره‌های اضطراری، شبکه داخلی و صندوق صوتی اینترنتی در دسترس هستند.</p>
+      <button class="btn-primary" style="width:100%;margin-top:14px;padding:10px;" onclick="closeModal()">بستن</button>
+    `);
+  }
+}
+
+/* ================= MAP / GPS ================= */
+const pins = [
+  { title: '۱. شرکت فناوری پارس‌دیتا', time: 'سه‌شنبه ۱۹:۰۰', desc: 'ورود آرش به طبقه منفی ۲ (اتاق سرور شماره ۷). خروج شتاب‌زده در ساعت ۱۹:۲۵.' },
+  { title: '۲. کافه نوآر (خیابان ولیعصر)', time: 'سه‌شنبه ۲۱:۰۰ تا ۲۲:۰۴', desc: 'آرش بیش از یک ساعت روی میز ۰۹ منتظر ماند و پس از دریافت پیام کیانوش به‌سرعت کافه را ترک کرد.' },
+  { title: '۳. تقاطع خیابان حافظ', time: 'سه‌شنبه ۲۲:۱۵', desc: 'سرعت حرکت بالا (احتمالاً دویدن یا تعقیب با خودرو). تماس کوتاه با شماره ناشناس در این نقطه ثبت شده.' },
+  { title: '⚠️ ۴. ایستگاه مترو قدیم — خروجی انبار 08', time: 'سه‌شنبه ۲۲:۴۰ (آخرین سیگنال)', desc: 'سیگنال GPS دقیقاً مقابل در فلزی «انبار شماره 08» قطع شده و گوشی در همین نقطه رها شده است.', clue: 'gps_warehouse' }
+];
+function selectPin(i) {
+  sfxClick();
+  const p = pins[i];
+  if (p.clue) addClue(p.clue);
+  document.getElementById('map-detail').innerHTML = `
+    <div class="card-row">
+      <span class="card-title">${p.title}</span>
+      <span class="card-meta">${p.time}</span>
+    </div>
+    <div class="card-sub" style="margin-top:6px;">${p.desc}</div>
+  `;
+}
+
+/* ================= VAULT APP ================= */
+function renderVault() {
+  const el = document.getElementById('vault-content');
+  if (!state.unlockedVault) {
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:24px 16px;">
+        <div style="font-size:44px;margin-bottom:10px;">🔐</div>
+        <h3 style="margin-bottom:8px;">گاوصندوق فایل‌های محرمانه</h3>
+        <p class="card-sub" style="margin-bottom:14px;">
+          برای دسترسی به اسناد رمزنگاری‌شده، کد ۴ رقمی امنیتی را وارد کنید.
+          <br><span style="font-size:11.5px;color:var(--blue);">(فرمول رمز در یادداشت خصوصی آرش نوشته شده است)</span>
+        </p>
+        <input type="tel" maxlength="4" id="vault-pin-input" class="pin-input-box" placeholder="----">
+        <div id="vault-err" style="color:var(--danger);font-size:12px;margin-bottom:12px;"></div>
+        <button class="btn-primary" style="width:100%;" onclick="checkVaultPin()">رمزگشایی فایل‌ها</button>
+      </div>
+    `;
+  } else {
+    el.innerHTML = `
+      <div class="tag green" style="margin-bottom:12px;">✅ رمزگشایی با موفقیت انجام شد (AES-256)</div>
+
+      <div class="card">
+        <div class="card-title" style="color:#93c5fd;margin-bottom:6px;">🎙️ فایل صوتی ضبط‌شده (جلسه مخفی)</div>
+        <div class="card-sub">
+          <strong>صدای دکتر بهرام نوری (مدیر امنیت):</strong><br>
+          «آرش نسخه بکاپ پروژه سایه رو برداشته. تا قبل از صبح پیداش کنید و ببریدش انبار ۰۸ مترو قدیم! بندازیدش گردن کیانوش، هیچ‌کس نباید بفهمه قرارداد فروش اطلاعات بیومتریک زیر سر منه.»
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:#c4b5fd;margin-bottom:6px;">📑 سند انتقال وجه پروژه سایه</div>
+        <div class="card-sub">
+          مبلغ: ۲.۴ میلیون دلار (رمزارز)<br>
+          امضاکننده مجوز خروج داده: <strong>دکتر بهرام نوری</strong><br>
+          موضوع: واگذاری پایگاه داده بیومتریک کاربران
+        </div>
+      </div>
+
+      <div class="card" style="border-color:var(--success);">
+        <div class="card-title" style="color:var(--success);margin-bottom:6px;">✅ آماده گزارش به پلیس!</div>
+        <div class="card-sub">شما تمام مدارک قطعی را پیدا کردید. به برنامه <strong>ثبت گزارش پلیس</strong> بروید و آرش را نجات دهید.</div>
+      </div>
+    `;
+  }
+}
+
+function checkVaultPin() {
+  const val = document.getElementById('vault-pin-input').value.trim();
+  if (val === '7408') {
+    sfxUnlock();
+    state.unlockedVault = true;
+    addClue('vault_evidence');
+    saveState();
+    renderVault();
+  } else {
+    sfxError();
+    document.getElementById('vault-err').textContent = 'کد نادرست است! (دو رقم سرور ۷ + دو رقم شماره انبار در نقشه)';
+  }
+}
+
+/* ================= CASE REPORT & ENDINGS ================= */
+function renderCaseApp() {
+  const el = document.getElementById('case-content');
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-row">
+        <span class="card-title">📋 سرنخ‌های کشف‌شده</span>
+        <span class="clue-pill">${state.clues.length} / ${Object.keys(ALL_CLUES).length}</span>
+      </div>
+      <div class="card-sub" style="margin-top:8px;">
+        ${state.clues.length === 0 ? 'هنوز سرنخی ثبت نشده است. اپ‌ها را بررسی کنید.' :
+          state.clues.map(c => `• ${ALL_CLUES[c]}`).join('<br>')}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:14px;font-size:15px;">🚔 ارسال گزارش نهایی برای عملیات نجات</h3>
+      <div class="form-group">
+        <label>۱. مغز متفکر و مقصر اصلی کیست؟</label>
+        <select id="ans-culprit">
+          <option value="">انتخاب کنید...</option>
+          <option value="kianoush">کیانوش (همکار آرش)</option>
+          <option value="nouri">دکتر بهرام نوری (مدیر امنیت)</option>
+          <option value="sara">سارا (خواهر آرش)</option>
+          <option value="sohrab">سهراب مرادی</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>۲. آرش دقیقاً کجا حبس شده است؟</label>
+        <select id="ans-location">
+          <option value="">انتخاب کنید...</option>
+          <option value="cafe">کافه نوآر</option>
+          <option value="server">اتاق سرور شماره ۷ پارس‌دیتا</option>
+          <option value="warehouse08">انبار شماره ۰۸ ایستگاه مترو قدیم</option>
+          <option value="hafez">تقاطع خیابان حافظ</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>۳. انگیزه اصلی این جنایت چه بود؟</label>
+        <select id="ans-motive">
+          <option value="">انتخاب کنید...</option>
+          <option value="theft">سرقت پول شخصی آرش</option>
+          <option value="shadow">پنهان‌کردن پروژه سایه و فروش اطلاعات بیومتریک</option>
+          <option value="revenge">اختلاف خانوادگی</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%;" onclick="submitCase()">ارسال گزارش به پلیس</button>
+    </div>
+
+    <button class="back-btn" style="width:100%;padding:10px;color:#fca5a5;border-color:rgba(239,68,68,0.35);" onclick="resetGame()">🔄 شروع مجدد بازی از ابتدا</button>
+  `;
+}
+
+function submitCase() {
+  const c = document.getElementById('ans-culprit').value;
+  const l = document.getElementById('ans-location').value;
+  const m = document.getElementById('ans-motive').value;
+  if (!c || !l || !m) {
+    sfxError();
+    showNotif('گزارش ناقص است', 'لطفاً هر سه سوال را پاسخ دهید.');
+    return;
+  }
+
+  if (c === 'nouri' && l === 'warehouse08' && m === 'shadow') {
+    sfxUnlock();
+    showModal(`
+      <div class="tag green" style="margin-bottom:10px;">🏆 پایان طلایی — پرونده با موفقیت حل شد!</div>
+      <h2 style="margin-bottom:12px;color:#6ee7b7;">آرش زنده نجات پیدا کرد!</h2>
+      <p class="card-sub" style="line-height:1.95;">
+        ۲۰ دقیقه پس از گزارش دقیق شما، تیم ویژه پلیس در فلزی <strong>انبار شماره ۰۸ ایستگاه مترو قدیم</strong> را شکست و آرش راد را زنده ولی مجروح نجات داد.<br><br>
+        با استناد به فایل‌های گاوصندوق، <strong>دکتر بهرام نوری</strong> هنگام خروج از کشور بازداشت شد و شبکه «پروژه سایه» برای همیشه متلاشی شد. کیانوش نیز به‌عنوان شاهد کلیدی تبرئه شد.<br><br>
+        <strong>امتیاز کارآگاهی شما:</strong> ${state.clues.length} از ${Object.keys(ALL_CLUES).length} سرنخ کشف‌شده.
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal()">عالی بود!</button>
+    `);
+  } else if (l === 'warehouse08') {
+    sfxError();
+    showModal(`
+      <div class="tag" style="margin-bottom:10px;">⚖️ پایان خاکستری — نجات ناقص</div>
+      <h2 style="margin-bottom:12px;color:#fcd34d;">آرش پیدا شد، اما مقصر فرار کرد!</h2>
+      <p class="card-sub" style="line-height:1.95;">
+        پلیس آرش را در انبار ۰۸ پیدا کرد، اما به دلیل اشتباه در معرفی مقصر یا انگیزه اصلی، <strong>مغز متفکر واقعی فرصت فرار پیدا کرد</strong> و اسناد پروژه سایه را از بین برد.<br><br>
+        دوباره مدارک گاوصندوق و صندوق صوتی را بررسی کنید و گزارش دقیق‌تری بفرستید!
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal()">تلاش مجدد</button>
+    `);
+  } else {
+    sfxError();
+    showModal(`
+      <div class="tag red" style="margin-bottom:10px;">💀 پایان تاریک — آدرس اشتباه</div>
+      <h2 style="margin-bottom:12px;color:#fca5a5;">عملیات شکست خورد!</h2>
+      <p class="card-sub" style="line-height:1.95;">
+        نیروهای پلیس به مکان اشتباهی اعزام شدند و تا زمانی که متوجه خطا شوند، انبار مترو قدیم خالی شده بود... آخرین سیگنال آرش برای همیشه خاموش شد.<br><br>
+        نقشه GPS، یادداشت قفل‌دار و صندوق صوتی را با دقت بیشتری بررسی کنید.
+      </p>
+      <button class="btn-primary" style="width:100%;margin-top:16px;" onclick="closeModal()">تلاش مجدد</button>
+    `);
+  }
+}
+
+function resetGame() {
+  if (confirm('کل پیشرفت بازی پاک شود؟')) {
+    localStorage.removeItem('case404_state');
+    location.reload();
+  }
+}
+
+/* ================= HINTS & MODAL ================= */
+function showHintModal() {
+  sfxClick();
+  let hint = '';
+  if (!state.unlockedNote) {
+    hint = 'قدم اول: در <strong>گالری</strong>، عکس «رسید کافه نوآر» را باز کنید. شماره میز (09) و ساعت قرار (21) را کنار هم بگذارید تا رمز یادداشت خصوصی به دست بیاید.';
+  } else if (!state.calledVoicemail) {
+    hint = 'قدم دوم: در یادداشت اول نوشته شماره صندوق صوتی = 0900 + کد پرسنلی سهراب (از عکس کارت سهراب در گالری). شماره <strong>09004829</strong> را در شماره‌گیر بگیرید!';
+  } else if (!state.unlockedVault) {
+    hint = 'قدم سوم: برای باز کردن <strong>گاوصندوق</strong>، عدد روی سرور ۷ در گالری (74) را کنار شماره انبار در آخرین نقطه <strong>ردیاب GPS</strong> (08) بگذارید.';
+  } else {
+    hint = 'شما تمام مدارک اصلی را باز کرده‌اید! حالا وارد <strong>ثبت گزارش پلیس</strong> شوید و مقصر، مکان و انگیزه را ثبت کنید.';
+  }
+  showModal(`
+    <h3 style="margin-bottom:10px;color:#fcd34d;">💡 راهنمای هوشمند مرحله فعلی</h3>
+    <p class="card-sub" style="line-height:1.9;">${hint}</p>
+    <button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;" onclick="closeModal()">باشه، فهمیدم</button>
+  `);
+}
+
+function showModal(html) {
+  document.getElementById('modal-box').innerHTML = html;
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(e) {
+  if (!e || e.target.id === 'modal') {
+    document.getElementById('modal').classList.remove('show');
+  }
+}
+
+updateClueCounter();
+</script>
+</body>
+</html>
