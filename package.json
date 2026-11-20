@@ -1,1 +1,12 @@
+{
+  "name": "case-404-lost-phone",
+  "version": "1.0.0",
+  "dependencies": {
+    "@capacitor/android": "^6.1.0",
+    "@capacitor/core": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.0"
+  }
+}
 
