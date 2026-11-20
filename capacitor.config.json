@@ -1,1 +1,9 @@
+{
+  "appId": "com.detective.case404",
+  "appName": "پرونده ۴۰۴",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#05070f"
+  }
+}
 
